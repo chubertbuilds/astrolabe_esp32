@@ -131,6 +131,7 @@ AstrolabeInterface::AstrolabeInterface(InterfaceParams p, Adafruit_PCF8574* _pcf
     old_encoder_position = ss->getEncoderPosition();
 
     state = DATETIME;
+    needs_initialize = true;
 
     blink_clk = false;
     blink_clk_counter = 0;
@@ -145,10 +146,6 @@ AstrolabeInterface::AstrolabeInterface(InterfaceParams p, Adafruit_PCF8574* _pcf
 void AstrolabeInterface::initializeLoading() {
     lcd->setCursor(0,1);
     lcd->print("     LOADING...     ");
-}
-
-void AstrolabeInterface::exitLoading() {
-    this->initializeState(DATETIME, old_p);
 }
 
 void AstrolabeInterface::initializeDatetime(InterfaceParams p) {
@@ -189,7 +186,7 @@ void AstrolabeInterface::initializeDatetime(InterfaceParams p) {
     old_p = p;
 }
 
-void AstrolabeInterface::initializeInfo(int state, InterfaceParams p) {
+void AstrolabeInterface::initializeInfo(InterfaceParams p) {
     int planet_n = state - INFO_SUN;
     SphereVector latlong_ecl;
     bool retrograde = false;
@@ -326,7 +323,7 @@ void AstrolabeInterface::initializeInfo(int state, InterfaceParams p) {
     }
 }
 
-void AstrolabeInterface::initializeStar(int state, InterfaceParams p) {
+void AstrolabeInterface::initializeStar(InterfaceParams p) {
     int star_n = state - INFO_STAR_A;
     SphereVector altaz = p.stars_altaz[star_n];
 
@@ -457,7 +454,7 @@ void AstrolabeInterface::initializeHoroscope(InterfaceParams p) {
 }
 
 
-void AstrolabeInterface::initializeState(int state, InterfaceParams p) {
+void AstrolabeInterface::initializeState(InterfaceParams p) {
     lcd->clear();
 
     switch(state) {
@@ -471,7 +468,7 @@ void AstrolabeInterface::initializeState(int state, InterfaceParams p) {
         case INFO_MARS:
         case INFO_JUPITER:
         case INFO_SATURN: 
-            initializeInfo(state, p);
+            initializeInfo(p);
             break;
         case SETTINGS:
             initializeSettings();
@@ -494,7 +491,7 @@ void AstrolabeInterface::initializeState(int state, InterfaceParams p) {
         case INFO_STAR_J:
         case INFO_STAR_K:
         case INFO_STAR_L:
-            initializeStar(state, p);
+            initializeStar(p);
             break;
     }
 
@@ -1037,6 +1034,13 @@ void AstrolabeInterface::processCalibration() {
 
 void AstrolabeInterface::process(InterfaceParams p) {
     planetLED(p);
+
+    if (needs_initialize) {
+        initializeState(p);
+        needs_initialize = false;
+        return;
+    }
+
     switch(state) {
         case DATETIME:
         case DATETIME_EDIT_DAY:
@@ -1150,7 +1154,7 @@ EncoderReturn AstrolabeInterface::serviceEncoder() {
             else {
                 state = encoder_direction ? state + 1 : state - 1;
             }
-            initializeState(state, old_p);
+            needs_initialize = true;
         }
         if (state >= INFO_STAR_A && state <= INFO_STAR_L) {
             if (state == INFO_STAR_A) {
@@ -1162,7 +1166,7 @@ EncoderReturn AstrolabeInterface::serviceEncoder() {
             else {
                 state = encoder_direction? state + 1 : state - 1;
             }
-            initializeState(state, old_p);
+            needs_initialize = true;
         }
     }
     return EncoderReturn{.date_offset = date_offset, .settings_changed = settings_changed, .calibration_changed = calibration_changed};
@@ -1172,23 +1176,23 @@ void AstrolabeInterface::serviceButton() {
     if (! pcf->digitalRead(LEFT_BUTTON)) {
         if (state == CALIBRATION) {
             state = SETTINGS;
-            initializeState(SETTINGS, old_p);
+            needs_initialize = true;
         }
         else if (state == SETTINGS) {
             state = HOROSCOPE;
-            initializeState(HOROSCOPE, old_p);   
+            needs_initialize = true;
         }
         else if (state == HOROSCOPE) {
             state = INFO_STAR_A;
-            initializeState(INFO_STAR_A, old_p);   
+            needs_initialize = true;
         }
         else if (state >= INFO_STAR_A && state <= INFO_STAR_L) {
             state = INFO_SUN;
-            initializeState(INFO_SUN, old_p);   
+            needs_initialize = true;
         }
         else if (state >= INFO_SUN && state <= INFO_SATURN) {
             state = DATETIME;
-            initializeState(DATETIME, old_p);
+            needs_initialize = true;
         }
         else if (state == DATETIME_EDIT_DAY) state = DATETIME_EDIT_MONTH;
         else if (state == DATETIME_EDIT_MONTH) state = DATETIME_EDIT_YEAR;
@@ -1199,25 +1203,25 @@ void AstrolabeInterface::serviceButton() {
         }
         else if (state == DATETIME) {
             state = CALIBRATION;
-            initializeState(CALIBRATION, old_p);
+            needs_initialize = true;
         }
     }
     if (! pcf->digitalRead(RIGHT_BUTTON)) {
         if (state >= INFO_SUN && state <= INFO_SATURN) {
             state = INFO_STAR_A;
-            initializeState(INFO_STAR_A, old_p);
+            needs_initialize = true;
         }
         else if (state >= INFO_STAR_A && state <= INFO_STAR_L) {
             state = HOROSCOPE;
-            initializeState(HOROSCOPE, old_p);
+            needs_initialize = true;
         }
         else if (state == HOROSCOPE) {
             state = SETTINGS;
-            initializeState(SETTINGS, old_p);   
+            needs_initialize = true;
         }
         else if (state == DATETIME) {
             state = INFO_SUN;
-            initializeState(INFO_SUN, old_p);
+            needs_initialize = true;
         }
         else if (state == DATETIME_EDIT_MONTH) state = DATETIME_EDIT_DAY;
         else if (state == DATETIME_EDIT_YEAR) state = DATETIME_EDIT_MONTH;
@@ -1228,11 +1232,11 @@ void AstrolabeInterface::serviceButton() {
         } 
         else if (state == SETTINGS) {
             state = CALIBRATION;
-            initializeState(CALIBRATION, old_p);
+            needs_initialize = true;
         }
         else if (state == CALIBRATION) {
             state = DATETIME;
-            initializeState(DATETIME, old_p);  
+            needs_initialize = true;
         }
     }
 }

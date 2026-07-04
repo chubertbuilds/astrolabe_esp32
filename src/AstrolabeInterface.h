@@ -130,16 +130,16 @@ class AstrolabeInterface {
         EncoderReturn serviceEncoder();
         void serviceButton();
         void initializeLoading();
-        void exitLoading();
         Settings getSettings();
         float getCalibration();
 
     private:
         Adafruit_LiquidCrystal* lcd;
-        void initializeState(int state, InterfaceParams p);
+        bool needs_initialize;
+        void initializeState(InterfaceParams p);
         void initializeDatetime(InterfaceParams p);
-        void initializeInfo(int state, InterfaceParams p);
-        void initializeStar(int state, InterfaceParams p);
+        void initializeInfo(InterfaceParams p);
+        void initializeStar(InterfaceParams p);
         void initializeSettings();
         void initializeCalibration();
         void initializeHoroscope(InterfaceParams p);

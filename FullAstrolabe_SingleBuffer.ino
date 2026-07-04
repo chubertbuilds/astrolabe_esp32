@@ -110,8 +110,8 @@ TimeCalculator* time_calculator;
 int sidereal_day_offset = 0;
 double jd, old_jd_back, old_jd_front;
 DateTime dt;
-bool DST = true;
-int UTC_offset = -8;
+bool DST = false; //insert your own default DST setting
+int UTC_offset = 0; //insert your own default timezone
 
 //tympanum
 Tympanum* tympanum;
@@ -565,8 +565,6 @@ void setup() {
   
   esp_lcd_panel_init(panel_handle);
   esp_lcd_rgb_panel_register_event_callbacks(panel_handle, &cbs, nullptr);
-
-  interface->exitLoading();
 }
 
 void loop() {
