@@ -161,7 +161,7 @@ void AstrolabeInterface::initializeDatetime(InterfaceParams p) {
     lcd->setCursor(5, 2);
     int week_day = getDayOfWeek(p.dt.year, p.dt.month, p.dt.day);
     lcd->print(week_names[week_day]);
-    lcd->print(settings.DST ? "*" : " ");
+    lcd->print(p.dt.DST ? "*" : " ");
     lcd->print(p.dt.hour / 10);
     lcd->print(p.dt.hour % 10);
     lcd->print(":");
