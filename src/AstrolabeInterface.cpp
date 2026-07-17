@@ -1,6 +1,6 @@
 #include "src/AstrolabeInterface.h"
 
-const char* week_names[7] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
+const char* week_names[7] = {"SUN ", "MON ", "TUE ", "WED ", "THU ", "FRI ", "SAT "};
 const char* sign_names[12] = {"ARI", "TAU", "GEM", "CAN", "LEO", "VIR", "LIB", "SCO", "SAG", "CAP", "AQU", "PIS"};
 const char* sign_names_long[12] = {
     "ARIES      ",
@@ -32,13 +32,13 @@ const char* sign_descriptions[12] = {
 };
 
 const char* planet_names[7] = {
-    "  SUN", 
-    " MOON", 
-    "MERCURY", 
-    " VENUS", 
-    " MARS", 
-    "JUPITER", 
-    "SATURN"};
+    "   SUN   ", 
+    "  MOON   ", 
+    " MERCURY ", 
+    "  VENUS  ", 
+    "  MARS   ", 
+    " JUPITER ", 
+    " SATURN  "};
 
 const char* star_names[12] = {
     "       ALGOL        ",
@@ -151,38 +151,22 @@ void AstrolabeInterface::initializeLoading() {
 void AstrolabeInterface::initializeDatetime(InterfaceParams p) {
     lcd->setCursor(5,1);
     lcd->print(p.dt.year);
-    lcd->setCursor(9,1);
     lcd->print("/");
-    lcd->setCursor(10,1);
     lcd->print(p.dt.month / 10);
-    lcd->setCursor(11,1);
     lcd->print(p.dt.month % 10);
-    lcd->setCursor(12,1);
-    lcd->print("/");   
-    lcd->setCursor(13,1);
+    lcd->print("/"); 
     lcd->print(p.dt.day / 10);
-    lcd->setCursor(14,1);
     lcd->print(p.dt.day % 10);
-
-    lcd->setCursor(10,2);
-    lcd->print(p.dt.hour / 10);
-    lcd->setCursor(11,2);
-    lcd->print(p.dt.hour % 10);
-    lcd->setCursor(12,2);
-    lcd->print(":");
-    lcd->setCursor(13,2);
-    lcd->print(p.dt.minute / 10);
-    lcd->setCursor(14,2);
-    lcd->print(p.dt.minute % 10);
-
-    lcd->setCursor(9, 2);
-    if (p.dt.DST) {
-        lcd->print("*");
-    }
 
     lcd->setCursor(5, 2);
     int week_day = getDayOfWeek(p.dt.year, p.dt.month, p.dt.day);
     lcd->print(week_names[week_day]);
+    lcd->print(settings.DST ? "*" : " ");
+    lcd->print(p.dt.hour / 10);
+    lcd->print(p.dt.hour % 10);
+    lcd->print(":");
+    lcd->print(p.dt.minute / 10);
+    lcd->print(p.dt.minute % 10);
     old_p = p;
 }
 
@@ -231,96 +215,58 @@ void AstrolabeInterface::initializeInfo(InterfaceParams p) {
     int ecl_lat = ecl_lat_f;
     ecl_lat = ecl_lat % 10;
     int ecl_lat_min = (int) std::abs(std::fmod(ecl_lat_f, 1.0) * 60.0);
-    lcd->setCursor(1, 0);
+    lcd->setCursor(0, 0);
     lcd->print(planet_names[planet_n]);
-    lcd->setCursor(9, 0);
     lcd->write(planet_n + 1);
-    if (retrograde) {
-        lcd->setCursor(10, 0);
-        lcd->print("R");
-    }
-    lcd->setCursor(14, 0);
-    lcd->print(".");
-    lcd->setCursor(17,0);
-    lcd->print("H");
+    lcd->print(retrograde? "R " : "  ");
 
     float house = getHouse(p.cusps, latlong_ecl.lon);
     int house_i = (int) std::floor(house);
     int house_d = (int) (std::fmod(house, 1.0) * 100.0);
-    lcd->setCursor(12, 0);
     lcd->print(house_i / 10);
-    lcd->setCursor(13, 0);
     lcd->print(house_i % 10);
-    lcd->setCursor(15, 0);
+    lcd->print(".");
     lcd->print(house_d / 10);
-    lcd->setCursor(16, 0);
     lcd->print(house_d % 10);
+    lcd->print("H ");
+    if (led_planet == state) {
+        lcd->print("*");
+        led_status_indicated = true;
+    }
 
     lcd->setCursor(0, 1);
     lcd->write(LAMBDA_SYMBOL);
-    lcd->setCursor(1, 1);
     lcd->print(":");
-    lcd->setCursor(2, 1);
     lcd->print(sign_names[sl.sign]);
-    lcd->setCursor(5, 1);
     lcd->print(sl.deg / 10);
-    lcd->setCursor(6, 1);
     lcd->print(sl.deg % 10);
-    lcd->setCursor(7, 1);
     lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(8, 1);
     lcd->print(sl.min / 10);
-    lcd->setCursor(9, 1);
     lcd->print(sl.min % 10);
-    lcd->setCursor(10, 1);
-    lcd->print("'");
-    lcd->setCursor(12, 1);
+    lcd->print("' ");
     lcd->print(BETA_SYMBOL);
-    lcd->setCursor(13, 1);
     lcd->print(":");
-    lcd->setCursor(14, 1);
     lcd->print(ecl_lat<0 ? "-" : " ");
-    lcd->setCursor(15, 1);
     lcd->print(std::abs(ecl_lat));
-    lcd->setCursor(16, 1);
     lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(17, 1);
     lcd->print(ecl_lat_min / 10);
-    lcd->setCursor(18, 1);
     lcd->print(ecl_lat_min % 10);
-    lcd->setCursor(19, 1);
     lcd->print("'");
 
     int alt = altaz.lat * 180.0 / std::numbers::pi;
     int az = getNormalizedAngle(-(altaz.lon + std::numbers::pi/2)) * 180.0 / std::numbers::pi;
     lcd->setCursor(2, 2);
     lcd->print("ALT:");
-    if (alt < 0) {
-        lcd->setCursor(6, 2);
-        lcd->print("-");
-    }
-    lcd->setCursor(7, 2);
+    lcd->print(alt < 0 ? "-" : " ");
     lcd->print(std::abs(alt / 10));
-    lcd->setCursor(8, 2);
     lcd->print(std::abs(alt % 10));
-    lcd->setCursor(11, 2);
+    lcd->print(DEGREE_SYMBOL);
+    lcd->print(" ");
     lcd->print("AZ:");
-    lcd->setCursor(14, 2);
     lcd->print(az / 100);
-    lcd->setCursor(15, 2);
     lcd->print((az / 10) % 10);
-    lcd->setCursor(16, 2);
     lcd->print(az % 10);
-    lcd->setCursor(9, 2);
     lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(17, 2);
-    lcd->print(DEGREE_SYMBOL);
-
-    if (led_planet == state) {
-        lcd->setCursor(19,0);
-        lcd->print("*");
-        led_status_indicated = true;
-    }
 }
 
 void AstrolabeInterface::initializeStar(InterfaceParams p) {
@@ -336,76 +282,49 @@ void AstrolabeInterface::initializeStar(InterfaceParams p) {
     int az = getNormalizedAngle(-(altaz.lon + std::numbers::pi/2)) * 180.0 / std::numbers::pi;
     lcd->setCursor(2, 2);
     lcd->print("ALT:");
-    if (alt < 0) {
-        lcd->setCursor(6, 2);
-        lcd->print("-");
-    }
-    lcd->setCursor(7, 2);
+    lcd->print(alt < 0 ? "-" : " ");
     lcd->print(std::abs(alt / 10));
-    lcd->setCursor(8, 2);
     lcd->print(std::abs(alt % 10));
-    lcd->setCursor(11, 2);
-    lcd->print("AZ:");
-    lcd->setCursor(14, 2);
-    lcd->print(az / 100);
-    lcd->setCursor(15, 2);
-    lcd->print((az / 10) % 10);
-    lcd->setCursor(16, 2);
-    lcd->print(az % 10);
-    lcd->setCursor(9, 2);
     lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(17, 2);
+    lcd->print(" ");
+    lcd->print("AZ:");
+    lcd->print(az / 100);
+    lcd->print((az / 10) % 10);
+    lcd->print(az % 10);
     lcd->print(DEGREE_SYMBOL);
 }
 
 void AstrolabeInterface::initializeSettings() {
-    lcd->setCursor(1, 0);
-    lcd->print("LONGITUDE:    .");
-    lcd->setCursor(2, 1);
-    lcd->print("LATITUDE:    .");
-    lcd->setCursor(1, 2);
-    lcd->setCursor(17, 0);
-    lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(17, 1);
-    lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(18, 1);
-    lcd->print("N");
-
-
-    lcd->setCursor(1, 2);
-    lcd->print("DST:");
-    lcd->setCursor(8, 2);
-    lcd->print("TIME: UTC");
-
     int longitude_i = std::abs(settings.longitude);
     int longitude_d = std::abs(std::fmod(settings.longitude, 1.0) * 10);
     int latitude_i = settings.latitude;
     int latitude_d = std::fmod(settings.latitude, 1.0) * 10;
-    lcd->setCursor(12, 0);
+
+    lcd->setCursor(1, 0);
+    lcd->print("LONGITUDE: ");
     lcd->print(longitude_i / 100);
-    lcd->setCursor(13, 0);
     lcd->print((longitude_i / 10) % 10);
-    lcd->setCursor(14, 0);
     lcd->print(longitude_i % 10);
-    lcd->setCursor(16, 0);
+    lcd->print(".");
     lcd->print(longitude_d);
-    lcd->setCursor(18, 0);
+    lcd->print(DEGREE_SYMBOL);
     lcd->print(settings.longitude > 0 ? "E" : "W");
 
-    lcd->setCursor(13, 1);
+    lcd->setCursor(2, 1);
+    lcd->print("LATITUDE:  ");
     lcd->print(latitude_i / 10);
-    lcd->setCursor(14, 1);
     lcd->print(latitude_i % 10);
-    lcd->setCursor(16, 1);
+    lcd->print(".");
     lcd->print(latitude_d);
+    lcd->print(DEGREE_SYMBOL);
+    lcd->print("N");
 
-    lcd->setCursor(6, 2);
-    lcd->print(settings.DST ? "Y" : "N");
-    lcd->setCursor(17, 2);
+    lcd->setCursor(1, 2);
+    lcd->print("DST: ");
+    lcd->print(settings.DST ? "Y " : "N ");
+    lcd->print("TIME: UTC");
     lcd->print(settings.UTC_offset >= 0 ? "+" : "-");
-    lcd->setCursor(18, 2);
     lcd->print(std::abs(settings.UTC_offset / 10));
-    lcd->setCursor(19, 2);
     lcd->print(std::abs(settings.UTC_offset % 10));
 }
 
@@ -415,26 +334,19 @@ void AstrolabeInterface::initializeCalibration() {
     lcd->setCursor(5, 0);
     lcd->print("CALIBRATION");
     lcd->setCursor(6, 1);
-    lcd->print("K:  .");
-    lcd->setCursor(9, 1);
+    lcd->print("K: ");
     lcd->print(k_ones);
-    lcd->setCursor(11, 1);
+    lcd->print(".");
     lcd->print(k_dec / 100);
-    lcd->setCursor(12, 1);
     lcd->print((k_dec / 10) % 10);
-    lcd->setCursor(13, 1);
     lcd->print(k_dec % 10);
 }
 
 void AstrolabeInterface::initializeHoroscope(InterfaceParams p) {
     float horoscope = p.cusps[11];
     SignLongitude sl = getSignLongitude(horoscope);
-    lcd->setCursor(0, 0);
-    lcd->print("     HOROSCOPUS     ");
-    lcd->setCursor(15, 1);
-    lcd->print(DEGREE_SYMBOL);
-    lcd->setCursor(18, 1);
-    lcd->print("'");
+    lcd->setCursor(5, 0);
+    lcd->print("HOROSCOPUS");
 
     lcd->setCursor(1, 1);
     lcd->print(sign_names_long[sl.sign]);
@@ -443,12 +355,11 @@ void AstrolabeInterface::initializeHoroscope(InterfaceParams p) {
 
     lcd->setCursor(13, 1);
     lcd->print(sl.deg / 10);
-    lcd->setCursor(14, 1);
     lcd->print(sl.deg % 10);
-    lcd->setCursor(16, 1);
+    lcd->print(DEGREE_SYMBOL);
     lcd->print(sl.min / 10);
-    lcd->setCursor(17, 1);
     lcd->print(sl.min % 10);
+    lcd->print("'");
 
     old_p = p;
 }
