@@ -6,8 +6,8 @@
 </h3>
 
 <p align=center>
-  <img src="docs/DSCF1821.jpg" width="300" />
-  <img src="docs/DSCF1828.jpg" width="300" /> 
+  <img src="docs/DSCF1821.JPG" width="450" />
+  <img src="docs/DSCF1828.JPG" width="450" /> 
 </p>
 
 ## Licensing
@@ -128,104 +128,104 @@ After printing, soldering, gluing, and tapping, it's time to build!
 
 1. Gather all the 3D-printed parts and components on a large, clear workspace.
 
-    <img src="docs/20260702_174930_001.jpg" width="300" />
+    <img src="docs/20260702_174930_001.jpg" width="450" />
 
 2. Assemble the bearing. 
     - Arrange the inner bearing inside the outer bearing eccentrically, such that the outside of the inner bearing is making contact with the inside of the outer bearing at one point.
     - This will create a large gap on the opposite side of the contact point, through which the nylon balls can be inserted. Insert all twelve.
 
-        <img src="docs/20260702_175514.jpg" width="300" />
+        <img src="docs/20260702_175514.jpg" width="450" />
 
     - As the balls are inserted, arrange them in a roughly even spacing. This will cause the inner and outer bearing to become concentric.
     - Take one half of the bearing cage and place it under the balls. The balls will not be inside their pockets, so the cage will not be fully seated.
     - Using a long tool such as a screwdriver, push the balls along the track until each ball is over a pocket. Once this happens, the assembly will fall into place over the bearing cage.
 
-        <img src="docs/20260702_175757.jpg" width="300" />
+        <img src="docs/20260702_175757.jpg" width="450" />
 
     - Place the other half of the bearing cage over the assembly; the magnets will lock it into place.
 
-        <img src="docs/20260702_175843.jpg" width="300" />
+        <img src="docs/20260702_175843.jpg" width="450" />
 
     - Spin the bearing around like a fidget toy.
 3. Assemble the display enclosure.
     - Insert the display inside the display mount, facing out.
 
-        <img src="docs/20260702_175927.jpg" width="300" />
+        <img src="docs/20260702_175927.jpg" width="450" />
 
     - Fit the display base on the other side of the display mount, sandwiching the display between the two parts.
 
-        <img src="docs/20260702_180007.jpg" width="300" />
+        <img src="docs/20260702_180007.jpg" width="450" />
 
     - Fasten the display mount and base together with four screws.
 4. Insert the potentiometer into the housing base.
 5. Capture the potentiometer with the potentiometer cap and three screws.
 
-    <img src="docs/20260702_180230.jpg" width="300" />
+    <img src="docs/20260702_180230.jpg" width="450" />
 
 6. Connect one JST SH 4-pin cable (hereafter referred to as an I2C cable) to the I2C port on the Qualia dev board.
 7. Connect the potentiometer connector to the 3-pin JST port on the Qualia dev board.
 8. Fasten the Qualia to the four bosses on the bottom of the housing base.
 
-    <img src="docs/20260702_181347.jpg" width="300" />
+    <img src="docs/20260702_181347.jpg" width="450" />
 
 9. Insert one end of the 40-pin FPC extension cable into the FPC extension board, and the other end into the Qualia. The metal pins **must be facing downward, as shown in the photograph.** It is possible to insert the cable backwards and engage the locking mechanism, which will invert the connections and damage your display.
 
-    <img src="docs/20260702_181632.jpg" width="300" />
+    <img src="docs/20260702_181632.jpg" width="450" />
 
 10. Fold and tape the extension cable as shown in the photograph. This prevents the cable from interfering with the bearing's rotary action.
 
-    <img src="docs/20260702_182457.jpg" width="300" />
+    <img src="docs/20260702_182457.jpg" width="450" />
 
 11. Connect the FPC cable to the display.
 
-    <img src="docs/20260702_182615.jpg" width="300" />
+    <img src="docs/20260702_182615.jpg" width="450" />
 
 12. Fasten the display enclosure to the five inner bosses.
 
-    <img src="docs/20260702_182945.jpg" width="300" />
+    <img src="docs/20260702_182945.jpg" width="450" />
 
 13. Lower the bearing over the display enclosure and fasten it to the seven outer bosses.
 
-    <img src="docs/20260702_183757.jpg" width="300" />
+    <img src="docs/20260702_183757.jpg" width="450" />
 
 14. Slide the potentiometer axle over the potentiometer shaft and tighten it with the hex key.
 
-    <img src="docs/20260702_183823.jpg" width="300" />
+    <img src="docs/20260702_183823.jpg" width="450" />
 
 15. Connect the GPIO expander to the Qualia dev board with the I2C cable.
 
-    <img src="docs/20260702_184624.jpg" width="300" />
+    <img src="docs/20260702_184624.jpg" width="450" />
 
 16. Use the included nuts to fasten the two buttons and the encoder to the housing lid.
 
-    <img src="docs/20260702_184706.jpg" width="300" />
+    <img src="docs/20260702_184706.jpg" width="450" />
 
 17. Connect the GPIO expander and the encoder breakout with an I2C cable.
 
-    <img src="docs/20260702_184834.jpg" width="300" />
+    <img src="docs/20260702_184834.jpg" width="450" />
 
 18. Fasten the character LCD to the lid with three screws.
 19. Connect the encoder breakout and the character LCD with an I2C cable.
 
-    <img src="docs/20260702_185358.jpg" width="300" />
+    <img src="docs/20260702_185358.jpg" width="450" />
 
 20. Fasten the GPIO expander to the two remaining bosses on the bottom of the housing base.
 21. Connect the two 6-pin JST connectors.
 
-    <img src="docs/20260702_190156.jpg" width="300" />
+    <img src="docs/20260702_190156.jpg" width="450" />
 
 22. With everything connected, fit the housing lid over the housing base. It snaps into place.
 
-    <img src="docs/20260702_190351.jpg" width="300" />
+    <img src="docs/20260702_190351.jpg" width="450" />
 
 23. At this point, the build is basically complete—congratulations! To finalize the build, the firmware needs to be uploaded. Follow the instructions in [firmware setup](#firmware-setup).
 24. Once the astrolabe gets its firmware flashed, you will see the star map displayed on the main LCD panel. Insert the rete into the slots on the inner bearing, and then rotate the bearing until the rete is aligned with the star map. 
 
-    <img src="docs/20260702_191308.jpg" width="300" />
+    <img src="docs/20260702_191308.jpg" width="450" />
 
 25. Press the secondary potentiometer gear over the hex boss, coupling the movement of the rete to animation on the display.
 
-    <img src="docs/20260702_191859.jpg" width="300" />
+    <img src="docs/20260702_191859.jpg" width="450" />
 
 ## Firmware Setup
 
